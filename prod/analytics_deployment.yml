@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analytics
+  namespace: wao-group-19
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: analytics
+  template:
+    metadata:
+      labels:
+        app: analytics
+    spec:
+      containers:
+        - name: analytics
+          image: registry.gitlab.au.dk/au685087/wao_group_19_examinrepo/analytics:0.0.0
+          env:
+            - name: MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: MONGO_USER
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: MONGO_PASSWORD
+            - name: MONGO_SERVICE
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: MONGO_SERVICE
+          ports:
+            - containerPort: 5081
+          resources:
+            limits:
+              cpu: "0.5"
+              memory: "500Mi"
+            requests:
+              cpu: "0.1"
+              memory: "128Mi"
+      imagePullSecrets:
+        - name: my-registry-credentials

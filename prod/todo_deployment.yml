@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo
+  namespace: wao-group-19
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: todo
+  template:
+    metadata:
+      labels:
+        app: todo
+    spec:
+      containers:
+        - name: todo
+          image: registry.gitlab.au.dk/au685087/wao_group_19_examinrepo/todo:1.0.1
+          env:
+            - name: MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: MONGO_USER
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: MONGO_PASSWORD
+            - name: MONGO_SERVICE
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: MONGO_SERVICE
+          ports:
+            - containerPort: 50051
+          resources:
+            limits:
+              cpu: "0.5"
+              memory: "500Mi"
+            requests:
+              cpu: "0.1"
+              memory: "128Mi"
+      imagePullSecrets:
+        - name: my-registry-credentials

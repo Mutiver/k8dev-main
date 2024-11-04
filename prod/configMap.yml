@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap
+  namespace: wao-group-19
+data:
+  serviceName: mongo
+  MONGO_SERVICE: mongo
+  RABBITMQ_SERVICE: rabbitmq
+  ANALYTICS_SERVICE: analytics
+  TODO_SERVICE: todo
+  ACCOUNTING_SERVICE: accounting

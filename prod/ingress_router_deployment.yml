@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: router-ingress
+  namespace: wao-group-19
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: swwao.courses.orbit.au.dk
+    http:
+      paths:
+        - path: /grp-19/router
+          pathType: Prefix
+          backend:
+            service:
+              name: router-service
+              port:
+                number: 4000

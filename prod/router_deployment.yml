@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: router
+  namespace: wao-group-19
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: router
+  template:
+    metadata:
+      labels:
+        app: router
+    spec:
+      containers:
+        - name: router
+          image: registry.gitlab.au.dk/au685087/wao_group_19_examinrepo/router:0.1.14
+          env:
+            - name: RABBITMQ_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: RABBITMQ_USER
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: RABBITMQ_PASSWORD
+            - name: RABBITMQ_SERVICE
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: RABBITMQ_SERVICE
+            - name: TODO_SERVICE
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: TODO_SERVICE
+            - name: ACCOUNTING_SERVICE
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: ACCOUNTING_SERVICE
+            - name: ANALYTICS_SERVICE
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: ANALYTICS_SERVICE
+            - name: HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+          ports:
+          ports:
+            - containerPort: 4000
+          resources:
+            limits:
+              cpu: "0.6"
+              memory: "1.5Gi"
+            requests:
+              cpu: "0.1"
+              memory: "128Mi"
+      imagePullSecrets:
+        - name: my-registry-credentials

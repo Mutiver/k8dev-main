@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bank
+  namespace: wao-group-19
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bank
+  template:
+    metadata:
+      labels:
+        app: bank
+    spec:
+      containers:
+        - name: bank
+          image: registry.gitlab.au.dk/au685087/wao_group_19_examinrepo/bank:1.0.0
+          env:
+            - name: MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: MONGO_USER
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: MONGO_PASSWORD
+            - name: MONGO_SERVICE
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: MONGO_SERVICE
+            - name: RABBITMQ_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: RABBITMQ_USER
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: RABBITMQ_PASSWORD
+            - name: RABBITMQ_SERVICE
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: RABBITMQ_SERVICE
+          resources:
+            limits:
+              cpu: "0.6"
+              memory: "1.5Gi"
+            requests:
+              cpu: "0.1"
+              memory: "128Mi"
+      imagePullSecrets:
+        - name: my-registry-credentials
